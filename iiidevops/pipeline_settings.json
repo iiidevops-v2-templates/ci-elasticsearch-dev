@@ -1,0 +1,6 @@
+{
+  "name": "Elasticsearch 7.17",
+  "description": "Elasticsearch 7.17.1 <a class='el-link el-link--primary' href='https://github.com/iiidevops-templates/elasticsearch-dev/blob/master/README.md' target='_blank'> 部署注意事項與使用說明</a><hr size=1 /><ul><li><strong>v2.0</strong>更新CI自動化腳本</li></ul>",
+  "arguments": [
+  ]
+}

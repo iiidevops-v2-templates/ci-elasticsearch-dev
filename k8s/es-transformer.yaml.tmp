@@ -1,0 +1,18 @@
+apiVersion: builtin
+kind: PrefixSuffixTransformer
+metadata:
+  name: es-transformer
+prefix: "${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-"
+fieldSpecs:
+- kind: Deployment
+  path: spec/selector/matchLabels/app
+- kind: Deployment
+  path: spec/template/metadata/labels/app
+- kind: Deployment
+  path: spec/template/spec/containers/name
+- kind: Deployment
+  path: spec/template/spec/containers/envFrom/configMapRef/name
+- kind: Service
+  path: metadata/labels/app
+- kind: Service
+  path: spec/selector/app

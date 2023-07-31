@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-kustomization
+
+namespace: ${CI_PROJECT_NAME}
+
+namePrefix: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-
+
+commonAnnotations:
+  iiidevops.org/project_name: "${CI_PROJECT_NAME}"
+  iiidevops.org/branch: "${CI_COMMIT_BRANCH}"
+  iiidevops.org/commit_id: "${CI_COMMIT_SHORT_SHA}"
+
+configMapGenerator:
+- name: git
+  literals:
+  - repo_name=${CI_PROJECT_NAME}
+  - git_username=${BOT_USERNAME}
+  - git_url=${CI_PROJECT_URL}.git
+  - git_branch=${CI_COMMIT_BRANCH}
+  - git_commit=${CI_COMMIT_SHORT_SHA}
+  - git_token=${GITLAB_TOKEN}
+
+transformers:
+- ./es-transformer.yaml
+- ./import-transformer.yaml
+
+resources:
+- deployment.yaml
+- service.yaml
+- import.yaml

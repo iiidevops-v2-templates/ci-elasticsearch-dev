@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es
+  template:
+    metadata:
+      labels:
+        app: es
+      annotations:
+        iiidevops.org/type: db-server
+    spec:
+      imagePullSecrets:
+      - name: harbor-local
+      containers:
+      - name: es
+        image: elasticsearch:7.17.10
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9200
+          name: es-tcp-9200
+        - containerPort: 9300 #Java API port
+          name: es-tcp-9300
+        env:
+        - name: "discovery.type"
+          value: "single-node"
+        - name: "bootstrap.memory_lock"
+          value: "true"
+        - name: "ES_JAVA_OPTS"
+          value: "-Xms256m -Xmx256m"
+        - name: "http.cors.enabled"
+          value: "true"
+        - name: "http.cors.allow-origin"
+          value: "*"
+        - name: "indices.recovery.max_bytes_per_sec"
+          value: "0"
+        - name: "refresh_interval"
+          value: "30s"
+        envFrom:
+          - configMapRef:
+              name: "env"
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
