@@ -5,6 +5,8 @@ metadata:
 prefix: "${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-"
 fieldSpecs:
 - kind: Deployment
+  path: metadata/labels/app
+- kind: Deployment
   path: spec/selector/matchLabels/app
 - kind: Deployment
   path: spec/template/metadata/labels/app
