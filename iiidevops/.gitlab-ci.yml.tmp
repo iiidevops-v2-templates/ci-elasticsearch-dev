@@ -7,7 +7,7 @@ stages:
 
 include:
   - project: 'iiidevops-templates/ci-template'
-    ref: 'v2.4.1'
+    ref: 'v2.5.4'
     file: 'ci/template.gitlab-ci.yml'
 
 Deploy--Set environment and wait deployment:
@@ -17,21 +17,20 @@ Deploy--Set environment and wait deployment:
     namespace: ${CI_PROJECT_NAME}
     deploy_name: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-es
   only:
-    - master
+    - develop
 
 Deploy--Elasticsearch:
   stage: deploy
-  image:
-    name: alpine/k8s:1.25.9
   variables:
     iiidevops: deployed-environments
   script:
-  - envsubst < k8s/kustomization.yaml.tmp > k8s/kustomization.yaml
-  - envsubst < k8s/es-transformer.yaml.tmp > k8s/es-transformer.yaml
-  - envsubst < k8s/import-transformer.yaml.tmp > k8s/import-transformer.yaml
-  - kubectl kustomize k8s/ | kubectl delete --ignore-not-found -f -
-  - kubectl kustomize k8s/ | kubectl apply -f -
+  - envsubst < k8s/es/kustomization.yaml.tmp > k8s/es/kustomization.yaml
+  - envsubst < k8s/es/es-transformer.yaml.tmp > k8s/es/es-transformer.yaml
+  - envsubst < k8s/import/kustomization.yaml.tmp > k8s/import/kustomization.yaml
+  - envsubst < k8s/import/import-transformer.yaml.tmp > k8s/import/import-transformer.yaml
+  - kubectl kustomize k8s/es/ | kubectl delete --ignore-not-found -f -
+  - kubectl kustomize k8s/es/ | kubectl apply -f -
+  - kubectl kustomize k8s/import/ | kubectl delete --ignore-not-found -f -
+  - kubectl kustomize k8s/import/ | kubectl apply -f -
   only:
-    - master
-
-
+    - develop

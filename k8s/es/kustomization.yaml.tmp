@@ -12,6 +12,9 @@ commonAnnotations:
   iiidevops.org/branch: "${CI_COMMIT_BRANCH}"
   iiidevops.org/commit_id: "${CI_COMMIT_SHORT_SHA}"
 
+generatorOptions:
+ disableNameSuffixHash: true
+
 configMapGenerator:
 - name: git
   literals:
@@ -24,9 +27,7 @@ configMapGenerator:
 
 transformers:
 - ./es-transformer.yaml
-- ./import-transformer.yaml
 
 resources:
 - deployment.yaml
 - service.yaml
-- import.yaml

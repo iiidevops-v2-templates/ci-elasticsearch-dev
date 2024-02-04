@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-import-kustomization
+
+namespace: ${CI_PROJECT_NAME}
+
+nameSuffix: -es-${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}
+
+commonAnnotations:
+  iiidevops.org/project_name: "${CI_PROJECT_NAME}"
+  iiidevops.org/branch: "${CI_COMMIT_BRANCH}"
+  iiidevops.org/commit_id: "${CI_COMMIT_SHORT_SHA}"
+
+transformers:
+- ./import-transformer.yaml
+
+resources:
+- import.yaml
