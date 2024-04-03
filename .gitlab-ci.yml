@@ -6,7 +6,7 @@ stages:
 - test
 include:
 - project: iiidevops-templates/ci-template
-  ref: v2.5.5
+  ref: v2.6.0
   file: ci/template.gitlab-ci.yml
 Deploy--Set environment and wait deployment:
   variables:
@@ -15,7 +15,7 @@ Deploy--Set environment and wait deployment:
     namespace: ${CI_PROJECT_NAME}
     deploy_name: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-es
   only:
-  - develop
+  - master
 Deploy--Elasticsearch:
   stage: deploy
   variables:
@@ -30,4 +30,4 @@ Deploy--Elasticsearch:
   - kubectl kustomize k8s/import/ | kubectl delete --ignore-not-found -f -
   - kubectl kustomize k8s/import/ | kubectl apply -f -
   only:
-  - develop
+  - master
