@@ -16,7 +16,7 @@ generatorOptions:
  disableNameSuffixHash: true
 
 configMapGenerator:
-- name: git
+- name: env
   literals:
   - repo_name=${CI_PROJECT_NAME}
   - git_username=${BOT_USERNAME}

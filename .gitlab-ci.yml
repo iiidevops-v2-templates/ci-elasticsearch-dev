@@ -1,25 +1,20 @@
+include:
+- project: iiidevops-templates/ci-template
+  ref: v2.8.0
+  file: ci/template.gitlab-ci.yml
+
 stages:
 - initial
 - scan
 - build
 - deploy
 - test
-include:
-- project: iiidevops-templates/ci-template
-  ref: v2.6.0
-  file: ci/template.gitlab-ci.yml
-Deploy--Set environment and wait deployment:
-  variables:
-    iiidevops: deployed-environments
-    max_wait: 128
-    namespace: ${CI_PROJECT_NAME}
-    deploy_name: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-es
-  only:
-  - master
+
 Deploy--Elasticsearch:
   stage: deploy
+  extends: .deploy-service
   variables:
-    iiidevops: deployed-environments
+    iiidevops: deploy-service
   script:
   - envsubst < k8s/es/kustomization.yaml.tmp > k8s/es/kustomization.yaml
   - envsubst < k8s/es/es-transformer.yaml.tmp > k8s/es/es-transformer.yaml
@@ -29,5 +24,15 @@ Deploy--Elasticsearch:
   - kubectl kustomize k8s/es/ | kubectl apply -f -
   - kubectl kustomize k8s/import/ | kubectl delete --ignore-not-found -f -
   - kubectl kustomize k8s/import/ | kubectl apply -f -
-  only:
-  - master
+
+Deploy--Wait Elasticsearch:
+  stage: deploy
+  extends: .deploy-service
+  image: iiiorg/iiidevops-cli:0.0.7
+  variables:
+    iiidevops: deploy-service
+    max_wait: 128
+    namespace: ${CI_PROJECT_NAME}
+    deploy_name: ${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-es
+  script:
+  - deploy-wait.pl
